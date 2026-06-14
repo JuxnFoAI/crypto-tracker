@@ -1,0 +1,273 @@
+<main class="min-h-screen px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+  <div class="mx-auto max-w-5xl">
+    <a
+      routerLink="/"
+      class="mb-6 inline-flex items-center gap-2 rounded-lg text-sm text-gray-600 transition hover:text-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:text-gray-400"
+    >
+      <svg
+        class="h-4 w-4"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+      </svg>
+      {{ t().detail.back }}
+    </a>
+
+    @switch (state()) {
+      @case ('loading') {
+        <app-loading-spinner />
+      }
+      @case ('error') {
+        <app-error-state
+          [message]="errorMessage()"
+          [retryLabel]="t().common.retry"
+          (retry)="retry()"
+        />
+      }
+      @case ('success') {
+        @if (coin(); as detail) {
+          <div class="animate-fade-in">
+            <header
+              class="mb-8 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between"
+            >
+              <div class="flex items-start gap-3 sm:gap-4">
+                <img
+                  [src]="detail.image.large"
+                  [alt]="t().detail.logoAlt(detail.name)"
+                  width="64"
+                  height="64"
+                  class="h-12 w-12 rounded-full sm:h-16 sm:w-16"
+                />
+                <div>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <h1 class="text-2xl font-bold text-gray-900 sm:text-3xl dark:text-white">
+                      {{ detail.name }}
+                    </h1>
+                    <span class="text-sm uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                      {{ detail.symbol }}
+                    </span>
+                    @if (detail.market_cap_rank !== null) {
+                      <span
+                        class="rounded-md bg-black/5 px-2 py-0.5 text-xs font-semibold text-gray-600 dark:bg-white/5 dark:text-gray-300"
+                      >
+                        {{ t().detail.rank(detail.market_cap_rank) }}
+                      </span>
+                    }
+                  </div>
+
+                  <p class="mt-2 text-3xl font-bold text-gray-900 sm:text-4xl dark:text-white">
+                    {{ currentPrice() | currency: 'USD' : 'symbol' : '1.2-2' }}
+                  </p>
+
+                  <div class="mt-3 flex flex-wrap gap-2">
+                    @for (change of priceChanges(); track change.label) {
+                      <span
+                        class="rounded-md px-2 py-1 text-xs font-semibold"
+                        [class]="
+                          change.value >= 0
+                            ? 'bg-success/10 text-success'
+                            : 'bg-danger/10 text-danger'
+                        "
+                      >
+                        {{ change.label }}: {{ change.value | number: '1.2-2' }}%
+                      </span>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                (click)="toggleFavorite()"
+                [attr.aria-pressed]="isFavorite()"
+                class="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold ring-1 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:w-auto sm:py-2"
+                [class]="
+                  isFavorite()
+                    ? 'bg-yellow-400/10 text-yellow-600 ring-yellow-400/40 hover:bg-yellow-400/20 dark:text-yellow-400'
+                    : 'bg-white text-gray-600 ring-gray-200 hover:text-yellow-600 hover:ring-yellow-400/40 dark:bg-bg-card dark:text-gray-300 dark:ring-white/10 dark:hover:text-yellow-400'
+                "
+              >
+                <app-star-icon [filled]="isFavorite()" />
+                {{ isFavorite() ? t().detail.inFavorites : t().detail.addToFavorites }}
+              </button>
+            </header>
+
+            <section
+              class="mb-8 rounded-xl bg-white p-6 ring-1 ring-gray-200 dark:bg-bg-card dark:ring-white/5"
+            >
+              <h2
+                class="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400"
+              >
+                {{ t().detail.about(detail.name) }}
+              </h2>
+
+              @if (categories().length > 0) {
+                <ul class="mb-4 flex flex-wrap gap-2">
+                  @for (category of categories(); track category) {
+                    <li
+                      class="rounded-full bg-accent/10 px-2.5 py-1 text-xs font-medium text-accent"
+                    >
+                      {{ category }}
+                    </li>
+                  }
+                </ul>
+              }
+
+              @if (displayedDescription() !== '') {
+                @if (isDescriptionFallback()) {
+                  <p
+                    class="mb-2 inline-flex items-center gap-1.5 rounded-md bg-black/5 px-2 py-1 text-xs text-gray-500 dark:bg-white/5 dark:text-gray-400"
+                  >
+                    <svg
+                      class="h-3.5 w-3.5"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                      />
+                    </svg>
+                    {{ t().detail.descriptionFallbackNotice }}
+                  </p>
+                }
+                <p class="whitespace-pre-line text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+                  {{ displayedDescription() }}
+                </p>
+                @if (canExpandDescription()) {
+                  <button
+                    type="button"
+                    (click)="toggleDescription()"
+                    [attr.aria-expanded]="isDescriptionExpanded()"
+                    class="mt-2 rounded text-sm font-semibold text-accent transition hover:text-accent/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  >
+                    {{ isDescriptionExpanded() ? t().detail.readLess : t().detail.readMore }}
+                  </button>
+                }
+              }
+
+              <dl
+                class="mt-6 grid grid-cols-2 gap-x-4 gap-y-5 border-t border-gray-200 pt-5 sm:grid-cols-3 lg:grid-cols-4 dark:border-white/5"
+              >
+                @for (stat of aboutStats(); track stat.label) {
+                  <div>
+                    <dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                      {{ stat.label }}
+                    </dt>
+                    <dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+                      {{ stat.value }}
+                    </dd>
+                    @if (stat.hint !== undefined && stat.hint !== '') {
+                      <dd class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                        {{ stat.hint }}
+                      </dd>
+                    }
+                    @if (stat.progress !== undefined) {
+                      <dd
+                        class="mt-1.5 h-1.5 w-full max-w-[10rem] overflow-hidden rounded-full bg-black/10 dark:bg-white/10"
+                        aria-hidden="true"
+                      >
+                        <app-progress-bar [progress]="stat.progress" />
+                      </dd>
+                    }
+                  </div>
+                }
+              </dl>
+
+              @if (coinLinks().length > 0) {
+                <div class="mt-6 flex flex-wrap gap-2">
+                  @for (link of coinLinks(); track link.label) {
+                    <a
+                      [href]="link.url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center gap-1.5 rounded-lg bg-black/5 px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:bg-accent/10 hover:text-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:bg-white/5 dark:text-gray-300 dark:hover:bg-accent/10 dark:hover:text-accent"
+                    >
+                      {{ link.label }}
+                      <svg
+                        class="h-3.5 w-3.5"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+                        />
+                      </svg>
+                    </a>
+                  }
+                </div>
+              }
+            </section>
+
+            <section
+              class="rounded-xl bg-white p-4 ring-1 ring-gray-200 sm:p-6 dark:bg-bg-card dark:ring-white/5"
+            >
+              <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <h2
+                  class="text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                >
+                  {{ t().detail.priceHistory }}
+                </h2>
+                <div
+                  role="group"
+                  [attr.aria-label]="t().detail.rangeLabel"
+                  class="flex gap-1 rounded-lg bg-black/5 p-1 dark:bg-white/5"
+                >
+                  @for (range of historyRanges; track range) {
+                    <button
+                      type="button"
+                      (click)="selectDays(range)"
+                      [attr.aria-pressed]="selectedDays() === range"
+                      class="rounded-md px-3.5 py-2 text-xs font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:px-3 sm:py-1"
+                      [class]="
+                        selectedDays() === range
+                          ? 'bg-accent text-white'
+                          : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+                      "
+                    >
+                      {{ t().detail.historyDays(range) }}
+                    </button>
+                  }
+                </div>
+              </div>
+
+              <div class="relative h-56 sm:h-72 lg:h-80">
+                @if (historyState() === 'loading') {
+                  <div
+                    class="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-white/60 dark:bg-bg-card/60"
+                  >
+                    <app-loading-spinner />
+                  </div>
+                } @else if (historyState() === 'error') {
+                  <div role="alert" class="absolute inset-0 z-10 flex items-center justify-center">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                      {{ t().detail.historyError }}
+                    </p>
+                  </div>
+                }
+                <canvas
+                  #chartCanvas
+                  role="img"
+                  [attr.aria-label]="t().detail.chartLabel(detail.name)"
+                ></canvas>
+              </div>
+            </section>
+          </div>
+        }
+      }
+    }
+  </div>
+</main>

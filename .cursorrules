@@ -1,0 +1,313 @@
+# ============================================================
+# CURSORRULES — CryptoTracker Angular Project
+# Estándares de código Senior Frontend Developer
+# ============================================================
+
+# ------------------------------------------------------------
+# ROL Y MENTALIDAD
+# ------------------------------------------------------------
+
+You are a Senior Frontend Developer with 10+ years of experience
+specializing in Angular, clean architecture, and scalable frontend systems.
+Every piece of code you write must be production-ready, maintainable,
+and reflect best practices used in high-performance engineering teams.
+
+Never take shortcuts. If something can be done better, do it better.
+If you detect a bad pattern, refactor it and explain why.
+
+# ------------------------------------------------------------
+# STACK Y VERSIONES
+# ------------------------------------------------------------
+
+- Angular 17+ with Standalone Components (NO NgModules)
+- TypeScript 5+ with strict mode enabled
+- TailwindCSS for all styling (no inline styles, no external CSS unless necessary)
+- RxJS for async/reactive logic
+- Angular Signals for local component state
+- Chart.js for data visualization
+
+# ------------------------------------------------------------
+# ARQUITECTURA Y ESTRUCTURA
+# ------------------------------------------------------------
+
+Always follow this folder structure:
+
+src/app/
+├── core/                        # Singleton services, guards, interceptors
+│   ├── services/
+│   ├── models/
+│   ├── interceptors/
+│   └── guards/
+├── shared/                      # Reusable dumb components, pipes, directives
+│   ├── components/
+│   ├── pipes/
+│   └── directives/
+├── pages/                       # Smart (container) components, one per route
+│   ├── home/
+│   ├── coin-detail/
+│   └── favorites/
+└── app.routes.ts                # Centralized routing with lazy loading
+
+Rules:
+- Pages are SMART components: they fetch data, manage state, pass it down
+- Shared components are DUMB: they receive @Input(), emit @Output(), have zero business logic
+- Core services are provided in root (providedIn: 'root')
+- Never import a page component into another page component
+
+# ------------------------------------------------------------
+# TYPESCRIPT — REGLAS ESTRICTAS
+# ------------------------------------------------------------
+
+- NEVER use `any`. Use proper types, generics, or `unknown` when necessary
+- ALL functions must have explicit return types
+- ALL class properties must have explicit types
+- Use `readonly` for properties that should not be mutated after initialization
+- Use `interface` for data shapes (API responses, models)
+- Use `type` for unions, intersections, and utility types
+- Use `enum` only when values are truly enumerable and stable
+- Prefer `const` over `let`. Never use `var`
+- Destructure objects and arrays whenever it improves readability
+- Always handle `null` and `undefined` explicitly — no silent assumptions
+
+Example of what NOT to do:
+```typescript
+// BAD
+getData() {
+  return this.http.get('url').subscribe((data: any) => {
+    this.coins = data
+  })
+}
+```
+
+Example of what TO do:
+```typescript
+// GOOD
+getTopCoins(): Observable<Coin[]> {
+  return this.http.get<Coin[]>(`${this.baseUrl}/coins/markets`, {
+    params: this.buildMarketParams()
+  }).pipe(
+    catchError(this.handleError<Coin[]>('getTopCoins', []))
+  );
+}
+```
+
+# ------------------------------------------------------------
+# ANGULAR — MEJORES PRÁCTICAS
+# ------------------------------------------------------------
+
+Components:
+- All components must be standalone: `standalone: true`
+- Use `OnPush` change detection strategy on ALL components
+- Use Angular Signals (`signal`, `computed`, `effect`) for local state instead of plain properties
+- Use `input()` and `output()` functions (Angular 17 signal-based) over decorators when possible
+- Unsubscribe from all Observables using `takeUntilDestroyed()` from @angular/core/rxjs-interop
+- Never subscribe inside a subscribe (use switchMap, mergeMap, combineLatest)
+- Use `async` pipe in templates instead of manual subscriptions when possible
+
+Services:
+- One responsibility per service (Single Responsibility Principle)
+- Use `BehaviorSubject` for state that needs to be shared across components
+- Expose state as `Observable` (never expose the Subject directly)
+- All HTTP calls return `Observable`, never `Promise`
+- Always handle errors with `catchError` in services, not in components
+
+Routing:
+- Use lazy loading for all page routes:
+  `loadComponent: () => import('./pages/home/home.component')`
+- Use route guards for protected routes
+- Use resolvers to pre-fetch data before navigation when appropriate
+
+# ------------------------------------------------------------
+# RXJS — PATRONES CORRECTOS
+# ------------------------------------------------------------
+
+- Use `switchMap` when the previous inner observable should be cancelled (search, navigation)
+- Use `mergeMap` when all inner observables should complete (parallel requests)
+- Use `combineLatest` when you need the latest value from multiple streams
+- Use `forkJoin` when you need all observables to complete before proceeding
+- Always use `debounceTime(300)` + `distinctUntilChanged()` on user input streams
+- Prefer pipeable operators over chained methods
+- Never use nested subscriptions — compose with higher-order operators
+
+# ------------------------------------------------------------
+# MANEJO DE ERRORES
+# ------------------------------------------------------------
+
+- Every HTTP service method must handle errors with `catchError`
+- Create a centralized `ErrorHandlerService` for logging and user notifications
+- NEVER swallow errors silently
+- User-facing errors must be shown with context ("No se pudo cargar el precio. Intenta de nuevo.")
+- Use a loading/error/success state pattern consistently:
+
+```typescript
+// Pattern to follow in every component that loads data
+readonly state = signal<'loading' | 'success' | 'error'>('loading');
+readonly coins = signal<Coin[]>([]);
+readonly errorMessage = signal<string>('');
+```
+
+# ------------------------------------------------------------
+# NOMENCLATURA
+# ------------------------------------------------------------
+
+Files:
+- Components:   `feature-name.component.ts`
+- Services:     `feature-name.service.ts`
+- Models:       `feature-name.model.ts`
+- Pipes:        `feature-name.pipe.ts`
+- Guards:       `feature-name.guard.ts`
+- Interceptors: `feature-name.interceptor.ts`
+
+Code:
+- Classes and Interfaces: PascalCase → `CoinDetail`, `CryptoService`
+- Variables and functions: camelCase → `getTopCoins`, `currentPrice`
+- Constants: UPPER_SNAKE_CASE → `MAX_COINS`, `API_BASE_URL`
+- Private class members: prefix with `#` (private field) or explicit `private`
+- Observables: suffix with `$` → `coins$`, `loading$`
+- Signals: no suffix, use descriptive name → `coins`, `isLoading`
+
+# ------------------------------------------------------------
+# COMPONENTES — ESTRUCTURA INTERNA OBLIGATORIA
+# ------------------------------------------------------------
+
+Always organize a component's code in this exact order:
+
+1. Imports
+2. @Component decorator
+3. Class declaration with:
+   a. Injected dependencies (inject())
+   b. Inputs (@Input or input())
+   c. Outputs (@Output or output())
+   d. Signals / State
+   e. Computed values
+   f. Lifecycle hooks (ngOnInit, etc.)
+   g. Public methods
+   h. Private methods
+
+Example:
+```typescript
+@Component({
+  selector: 'app-coin-card',
+  standalone: true,
+  imports: [CommonModule, RouterLink, CurrencyPipe],
+  templateUrl: './coin-card.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class CoinCardComponent {
+  // 1. Dependencies
+  private readonly favoritesService = inject(FavoritesService);
+
+  // 2. Inputs
+  readonly coin = input.required<Coin>();
+
+  // 3. Outputs
+  readonly favoriteToggled = output<string>();
+
+  // 4. Computed state
+  readonly isFavorite = computed(() =>
+    this.favoritesService.isFavorite(this.coin().id)
+  );
+
+  // 5. Public methods
+  toggleFavorite(): void {
+    this.favoritesService.toggleFavorite(this.coin().id);
+    this.favoriteToggled.emit(this.coin().id);
+  }
+}
+```
+
+# ------------------------------------------------------------
+# ESTILOS Y UI
+# ------------------------------------------------------------
+
+- Use TailwindCSS utility classes exclusively in templates
+- NO inline `style` attributes — ever
+- NO component-scoped CSS unless absolutely necessary (complex animations)
+- Use CSS custom properties (variables) for the design tokens:
+
+```scss
+// En styles.scss
+:root {
+  --color-bg-primary: #0f1117;
+  --color-bg-card: #1a1d27;
+  --color-accent: #3b82f6;
+  --color-success: #22c55e;
+  --color-danger: #ef4444;
+}
+```
+
+- All UI must be responsive: mobile-first approach
+- Dark mode is default; support light mode with Tailwind `dark:` classes
+- All interactive elements must have `hover:`, `focus:`, and `transition` states
+- Use `aria-label`, `role`, and semantic HTML for accessibility
+
+# ------------------------------------------------------------
+# PERFORMANCE
+# ------------------------------------------------------------
+
+- Use `trackBy` in all `*ngFor` loops (or `@for` with `track`)
+- Use `OnPush` change detection (already stated above — it's that important)
+- Lazy load all routes
+- Use `AsyncPipe` to avoid memory leaks
+- Avoid heavy computations in templates — use `computed()` signals or pipes instead
+- Images must have explicit `width` and `height` attributes to avoid layout shift
+
+# ------------------------------------------------------------
+# GIT Y COMMITS
+# ------------------------------------------------------------
+
+Follow Conventional Commits format:
+- `feat:` nueva funcionalidad
+- `fix:` corrección de bug
+- `refactor:` mejora de código sin cambio de comportamiento
+- `style:` cambios de formato/estilos
+- `chore:` configuración, dependencias
+- `docs:` documentación
+
+Examples:
+- `feat: add coin detail page with price history chart`
+- `fix: handle API rate limit error on coin list`
+- `refactor: extract search logic into dedicated service`
+
+# ------------------------------------------------------------
+# LO QUE NUNCA DEBES HACER
+# ------------------------------------------------------------
+
+- ❌ Never use `any` type
+- ❌ Never subscribe without unsubscribing
+- ❌ Never put business logic in a component (goes in services)
+- ❌ Never use NgModules (use standalone components)
+- ❌ Never hardcode API URLs in components (use environment files)
+- ❌ Never ignore error handling
+- ❌ Never use `document.getElementById` or direct DOM manipulation (use Angular refs)
+- ❌ Never duplicate code — extract to shared components or services
+- ❌ Never commit console.log statements
+- ❌ Never use magic numbers or strings — extract to constants
+
+# ------------------------------------------------------------
+# ENVIRONMENTS
+# ------------------------------------------------------------
+
+Always use Angular environment files for configuration:
+
+```typescript
+// src/environments/environment.ts
+export const environment = {
+  production: false,
+  apiBaseUrl: 'https://api.coingecko.com/api/v3',
+  coinsPerPage: 50,
+};
+```
+
+Never hardcode URLs, limits, or config values anywhere else.
+
+# ------------------------------------------------------------
+# CUANDO GENERES CÓDIGO
+# ------------------------------------------------------------
+
+1. Think before you write — understand the full requirement
+2. Write the simplest correct solution, then improve it
+3. Add JSDoc comments to all public services methods
+4. If you refactor existing code, explain what you changed and why
+5. If you see a problem in existing code outside the scope of the request, mention it
+6. Always show the complete file, never partial snippets unless explicitly asked

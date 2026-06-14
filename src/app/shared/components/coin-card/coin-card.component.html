@@ -1,0 +1,65 @@
+<article
+  class="relative h-full rounded-xl bg-white shadow-sm ring-1 ring-gray-200 transition duration-200 hover:scale-105 hover:shadow-lg hover:shadow-accent/10 hover:ring-accent/60 dark:bg-bg-card dark:ring-white/5"
+>
+  <a
+    [routerLink]="['/coin', coin().id]"
+    [attr.aria-label]="translations().card.viewDetail(coin().name)"
+    class="block h-full rounded-xl p-4 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+  >
+    <div class="flex items-center gap-3 pr-8">
+      <span class="text-xs font-semibold text-gray-400 dark:text-gray-500">
+        #{{ coin().market_cap_rank }}
+      </span>
+      <img
+        [src]="coin().image"
+        [alt]="translations().card.logoAlt(coin().name)"
+        width="40"
+        height="40"
+        loading="lazy"
+        class="h-10 w-10 rounded-full"
+      />
+      <div class="min-w-0">
+        <h2 class="truncate text-sm font-semibold text-gray-900 dark:text-white">
+          {{ coin().name }}
+        </h2>
+        <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+          {{ coin().symbol }}
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-4 flex items-end justify-between gap-2">
+      <p class="text-lg font-bold text-gray-900 dark:text-white">
+        {{ coin().current_price | currency: 'USD' : 'symbol' : '1.2-2' }}
+      </p>
+      <span
+        class="rounded-md px-2 py-0.5 text-xs font-semibold"
+        [class]="isPositiveChange() ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'"
+      >
+        {{ change24h() | number: '1.2-2' }}%
+      </span>
+    </div>
+
+    <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+      {{ translations().card.volume24h }}:
+      {{ coin().total_volume | currency: 'USD' : 'symbol' : '1.0-0' }}
+    </p>
+  </a>
+
+  <button
+    type="button"
+    (click)="toggleFavorite()"
+    [attr.aria-pressed]="isFavorite()"
+    [attr.aria-label]="
+      isFavorite()
+        ? translations().card.removeFavorite(coin().name)
+        : translations().card.addFavorite(coin().name)
+    "
+    class="absolute right-2 top-2 rounded-full p-2 transition hover:bg-black/5 hover:text-yellow-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:hover:bg-white/5 dark:hover:text-yellow-400"
+    [class]="
+      isFavorite() ? 'text-yellow-500 dark:text-yellow-400' : 'text-gray-400 dark:text-gray-500'
+    "
+  >
+    <app-star-icon [filled]="isFavorite()" />
+  </button>
+</article>

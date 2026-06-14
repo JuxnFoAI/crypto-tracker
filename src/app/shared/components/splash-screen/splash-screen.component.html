@@ -1,0 +1,113 @@
+@if (isVisible()) {
+  <div
+    class="splash"
+    [class.splash--leaving]="isLeaving()"
+    role="status"
+    [attr.aria-label]="t().common.loading + ' CryptoTracker'"
+  >
+    <!-- ① Símbolo: hexágono con candlestick chart -->
+    <svg class="splash__symbol" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+      <!-- Órbitas punteadas con puntos orbitales -->
+      <g class="splash__orbits">
+        <circle
+          cx="100"
+          cy="100"
+          r="88"
+          stroke="#3b82f6"
+          stroke-opacity="0.25"
+          stroke-width="1.5"
+          stroke-dasharray="4 8"
+        />
+        <circle
+          cx="100"
+          cy="100"
+          r="78"
+          stroke="#3b82f6"
+          stroke-opacity="0.12"
+          stroke-width="1"
+          stroke-dasharray="2 10"
+        />
+        <circle cx="183" cy="70" r="3" fill="#3b82f6" />
+        <circle cx="33" cy="43" r="3" fill="#3b82f6" />
+        <circle cx="85" cy="187" r="3" fill="#3b82f6" />
+      </g>
+
+      <g class="splash__hex">
+        <!-- Hexágono principal flat-top -->
+        <polygon
+          points="162,100 131,46 69,46 38,100 69,154 131,154"
+          fill="#1a1d27"
+          stroke="#3b82f6"
+          stroke-width="3"
+          stroke-linejoin="round"
+        />
+        <!-- Anillo interior -->
+        <polygon
+          points="154,100 127,53 73,53 46,100 73,147 127,147"
+          fill="none"
+          stroke="#3b82f6"
+          stroke-opacity="0.2"
+          stroke-width="1.5"
+          stroke-linejoin="round"
+        />
+
+        <!-- Velas japonesas -->
+        <g class="splash__candles">
+          <!-- Vela 1: roja — mecha corta, cuerpo mediano -->
+          <g class="splash__candle">
+            <line x1="66" y1="94" x2="66" y2="126" stroke="#ef4444" stroke-width="2" />
+            <rect x="61.5" y="100" width="9" height="22" rx="1.5" fill="#ef4444" />
+          </g>
+          <!-- Vela 2: verde — mecha larga, cuerpo alto -->
+          <g class="splash__candle">
+            <line x1="83" y1="70" x2="83" y2="130" stroke="#22c55e" stroke-width="2" />
+            <rect x="78.5" y="84" width="9" height="36" rx="1.5" fill="#22c55e" />
+          </g>
+          <!-- Vela 3: roja — mecha media, cuerpo corto -->
+          <g class="splash__candle">
+            <line x1="100" y1="88" x2="100" y2="124" stroke="#ef4444" stroke-width="2" />
+            <rect x="95.5" y="96" width="9" height="18" rx="1.5" fill="#ef4444" />
+          </g>
+          <!-- Vela 4: verde — la protagonista, cuerpo largo -->
+          <g class="splash__candle">
+            <line x1="117" y1="58" x2="117" y2="132" stroke="#22c55e" stroke-width="2" />
+            <rect x="112.5" y="66" width="9" height="56" rx="1.5" fill="#22c55e" />
+          </g>
+          <!-- Vela 5: verde — mecha media, cuerpo mediano -->
+          <g class="splash__candle">
+            <line x1="134" y1="72" x2="134" y2="120" stroke="#22c55e" stroke-width="2" />
+            <rect x="129.5" y="80" width="9" height="30" rx="1.5" fill="#22c55e" />
+          </g>
+        </g>
+
+        <!-- Línea de tendencia ascendente -->
+        <polyline
+          class="splash__trend"
+          points="56,120 80,106 98,110 117,84 136,74"
+          pathLength="100"
+          stroke="#3b82f6"
+          stroke-opacity="0.35"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          fill="none"
+        />
+      </g>
+    </svg>
+
+    <!-- ② Wordmark -->
+    <div class="splash__wordmark">
+      <p class="splash__title splash__title--first">Crypto<span class="splash__dot"></span></p>
+      <p class="splash__title splash__title--second">
+        <span class="splash__title-accent">T</span>racker
+      </p>
+      <p class="splash__tagline">{{ t().splash.tagline }}</p>
+      <span class="splash__divider"></span>
+    </div>
+
+    <!-- Barra de progreso -->
+    <div class="splash__progress" aria-hidden="true">
+      <span class="splash__progress-bar"></span>
+    </div>
+  </div>
+}

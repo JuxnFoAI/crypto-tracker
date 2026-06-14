@@ -1,0 +1,101 @@
+<nav
+  [attr.aria-label]="t().nav.mainNavigation"
+  class="sticky top-0 z-20 border-b border-gray-200 bg-white/80 backdrop-blur transition-colors dark:border-white/5 dark:bg-bg-primary/80"
+>
+  <div class="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:px-6 sm:py-3 lg:px-8">
+    <a
+      routerLink="/"
+      class="shrink-0 rounded-lg text-base font-bold text-gray-900 transition hover:text-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:text-lg dark:text-white"
+    >
+      Crypto<span class="text-accent">Tracker</span>
+    </a>
+
+    <div class="flex items-center gap-0.5 sm:gap-1">
+      <a
+        routerLink="/"
+        routerLinkActive="bg-black/5 text-gray-900 dark:bg-white/5 dark:text-white"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="rounded-lg px-2.5 py-2 text-sm font-medium text-gray-600 transition hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:px-3 dark:text-gray-400 dark:hover:text-white"
+      >
+        {{ t().nav.home }}
+      </a>
+      <a
+        routerLink="/favorites"
+        routerLinkActive="bg-black/5 text-gray-900 dark:bg-white/5 dark:text-white"
+        class="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-sm font-medium text-gray-600 transition hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:gap-2 sm:px-3 dark:text-gray-400 dark:hover:text-white"
+      >
+        {{ t().nav.favorites }}
+        @if (favoritesCount() > 0) {
+          <span
+            [attr.aria-label]="t().nav.favoritesCount(favoritesCount())"
+            class="min-w-[1.25rem] rounded-full bg-accent px-1.5 py-0.5 text-center text-[10px] font-bold leading-none text-white"
+          >
+            {{ favoritesCount() }}
+          </span>
+        }
+      </a>
+
+      <button
+        type="button"
+        (click)="toggleLanguage()"
+        [attr.aria-label]="t().nav.switchLanguage"
+        class="ml-1 inline-flex items-center gap-1.5 rounded-lg px-2 py-2 text-xs font-bold uppercase tracking-wide text-gray-600 transition hover:bg-black/5 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:px-2.5 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+      >
+        <svg
+          class="h-5 w-5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0 0c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3 7.5 7.03 7.5 12s2.015 9 4.5 9Zm-8.716-6h17.432M3.284 9h17.432"
+          />
+        </svg>
+        {{ language() }}
+      </button>
+
+      <button
+        type="button"
+        (click)="toggleTheme()"
+        [attr.aria-label]="isDark() ? t().nav.switchToLight : t().nav.switchToDark"
+        class="rounded-lg p-2 text-gray-600 transition hover:bg-black/5 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+      >
+        @if (isDark()) {
+          <svg
+            class="h-5 w-5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
+            />
+          </svg>
+        } @else {
+          <svg
+            class="h-5 w-5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
+            />
+          </svg>
+        }
+      </button>
+    </div>
+  </div>
+</nav>

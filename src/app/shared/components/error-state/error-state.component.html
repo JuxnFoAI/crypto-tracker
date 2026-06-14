@@ -1,0 +1,13 @@
+<div
+  role="alert"
+  class="mx-auto flex max-w-md flex-col items-center gap-4 rounded-xl bg-white p-8 text-center ring-1 ring-danger/30 dark:bg-bg-card"
+>
+  <p class="text-sm text-gray-700 dark:text-gray-300">{{ message() }}</p>
+  <button
+    type="button"
+    (click)="retry.emit()"
+    class="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-gray-50 dark:focus-visible:ring-offset-bg-primary"
+  >
+    {{ retryLabel() }}
+  </button>
+</div>

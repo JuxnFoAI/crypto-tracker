@@ -1,0 +1,213 @@
+// SCSS propio de componente: justificado por la secuencia de animaciones
+// complejas de la splash screen (excepción permitida por el cursorrules).
+
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  background: var(--color-bg-primary);
+
+  &--leaving {
+    animation: splash-out 400ms ease-in forwards;
+  }
+}
+
+// ── ① Símbolo ───────────────────────────────────────────────
+
+.splash__symbol {
+  width: 200px;
+  height: 200px;
+  // 1. Hexágono: fade-in + scale 0.6 → 1.0
+  animation: symbol-pop 600ms ease-out both;
+}
+
+.splash__candle {
+  transform-box: fill-box;
+  // 2. Velas una a una, de izquierda a derecha
+  animation: candle-in 400ms ease-out both;
+
+  @for $i from 1 through 5 {
+    &:nth-of-type(#{$i}) {
+      animation-delay: 420ms + ($i - 1) * 80ms;
+    }
+  }
+}
+
+.splash__trend {
+  // 3. Draw effect con stroke-dashoffset (pathLength="100" en el SVG)
+  stroke-dasharray: 100;
+  animation: trend-draw 500ms ease-out 900ms both;
+}
+
+// ── ② Wordmark ──────────────────────────────────────────────
+
+.splash__wordmark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.splash__title {
+  margin: 0;
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  color: #f1f5f9;
+  text-align: center;
+
+  &--first {
+    // 4. "Crypto": slideUp + fade-in
+    animation: slide-up 500ms ease-out 800ms both;
+  }
+
+  &--second {
+    // 5. "Tracker": slideUp + fade-in
+    animation: slide-up 500ms ease-out 950ms both;
+  }
+}
+
+.splash__title-accent {
+  color: var(--color-accent);
+}
+
+.splash__dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-left: 6px;
+  border-radius: 9999px;
+  background: var(--color-accent);
+}
+
+.splash__tagline {
+  margin: 14px 0 0;
+  font-size: 13px;
+  letter-spacing: 5px;
+  text-align: center;
+  color: #64748b;
+  // 6. Tagline: fade-in
+  animation: fade-in-soft 500ms ease-out 1100ms both;
+}
+
+.splash__divider {
+  display: block;
+  width: 180px;
+  height: 1px;
+  margin-top: 16px;
+  background: #1e293b;
+  animation: fade-in-soft 500ms ease-out 1100ms both;
+}
+
+// ── Barra de progreso ───────────────────────────────────────
+
+.splash__progress {
+  width: 180px;
+  height: 2px;
+  border-radius: 9999px;
+  overflow: hidden;
+  background: rgba(59, 130, 246, 0.15);
+}
+
+.splash__progress-bar {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: var(--color-accent);
+  transform-origin: left;
+  // 7. Progreso 0% → 100% en 2.5s
+  animation: progress-fill 2500ms cubic-bezier(0.4, 0, 0.2, 1) 300ms both;
+}
+
+// ── Mobile: símbolo al 70% ──────────────────────────────────
+
+@media (max-width: 400px) {
+  .splash__symbol {
+    width: 140px;
+    height: 140px;
+  }
+}
+
+// ── Accesibilidad: sin animaciones si el usuario lo prefiere ─
+
+@media (prefers-reduced-motion: reduce) {
+  .splash,
+  .splash * {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+  }
+}
+
+// ── Keyframes ───────────────────────────────────────────────
+
+@keyframes symbol-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes candle-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes trend-draw {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-soft {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes progress-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes splash-out {
+  to {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+}
