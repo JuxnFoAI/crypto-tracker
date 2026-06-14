@@ -2,9 +2,11 @@
 
 Aplicación web para seguir el mercado de criptomonedas en tiempo real: precios, capitalización, históricos interactivos y lista de favoritos. Construida con Angular moderno (standalone components + signals) y la API pública de [CoinGecko](https://www.coingecko.com/es/api).
 
-![Screenshot de CryptoTracker](docs/screenshot.png)
+## 📸 Vista previa
 
-> 📸 _Screenshot pendiente: guarda una captura en `docs/screenshot.png`._
+| Inicio — Top 50 criptomonedas | Detalle — Bitcoin |
+| --- | --- |
+| ![Listado de criptomonedas con búsqueda y tarjetas de precio](docs/screenshot-home.png) | ![Página de detalle con estadísticas y descripción](docs/screenshot-coin-detail.png) |
 
 🔗 **Demo en vivo**: [próximamente](#)
 
@@ -53,8 +55,8 @@ Requisitos: [Node.js](https://nodejs.org/) 22+ y npm.
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/tu-usuario/crypto-tracker.git
-cd crypto-tracker
+git clone https://github.com/JuxnFoAI/CryptoTracker.git
+cd CryptoTracker
 
 # 2. Instalar dependencias
 npm install
