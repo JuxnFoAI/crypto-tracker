@@ -8,7 +8,7 @@ Aplicación web para seguir el mercado de criptomonedas en tiempo real: precios,
 | --- | --- |
 | ![Listado de criptomonedas con búsqueda y tarjetas de precio](docs/screenshot-home.png) | ![Página de detalle con estadísticas y descripción](docs/screenshot-coin-detail.png) |
 
-🔗 **Demo en vivo**: [próximamente](#)
+🔗 **Demo en vivo**: [juxnfoai.github.io/CryptoTracker](https://juxnfoai.github.io/CryptoTracker/)
 
 ## ✨ Funcionalidades
 
@@ -70,9 +70,24 @@ Abre [http://localhost:4200](http://localhost:4200) en el navegador.
 ### Otros comandos
 
 ```bash
-npm run build    # Build de producción (dist/crypto-tracker)
-npm test         # Tests unitarios
+npm run build              # Build de producción (dist/crypto-tracker)
+npm run build:github-pages # Build con base href para GitHub Pages
+npm test                   # Tests unitarios
 ```
+
+## 🌐 Demo en GitHub Pages
+
+La demo se publica automáticamente en cada push a `master` mediante [GitHub Actions](.github/workflows/deploy-github-pages.yml).
+
+**URL**: [https://juxnfoai.github.io/CryptoTracker/](https://juxnfoai.github.io/CryptoTracker/)
+
+### Activar GitHub Pages (solo la primera vez)
+
+1. En el repositorio de GitHub, ve a **Settings → Pages**.
+2. En **Build and deployment → Source**, selecciona **GitHub Actions**.
+3. Haz push de estos cambios a `master` o ejecuta el workflow manualmente desde la pestaña **Actions**.
+
+> Si renombras el repositorio, actualiza `baseHref` en la configuración `github-pages` de `angular.json`.
 
 ## ⚙️ Configuración
 
