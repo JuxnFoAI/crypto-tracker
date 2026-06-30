@@ -1,7 +1,7 @@
 import { DestroyRef } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 
-interface LoadResourceHandlers<T> {
+export interface LoadResourceHandlers<T> {
   readonly setLoading: () => void;
   readonly setSuccess: (value: T) => void;
   readonly setError: () => void;
@@ -10,6 +10,20 @@ interface LoadResourceHandlers<T> {
 
 export interface ResourceLoader {
   load<T>(source$: Observable<T>, handlers: LoadResourceHandlers<T>): void;
+}
+
+function subscribeToResource<T>(
+  source$: Observable<T>,
+  handlers: LoadResourceHandlers<T>,
+): Subscription {
+  return source$.subscribe({
+    next: (value: T) => handlers.setSuccess(value),
+    complete: (): void => {
+      if (handlers.isLoading()) {
+        handlers.setError();
+      }
+    },
+  });
 }
 
 /**
@@ -27,15 +41,7 @@ export function createResourceLoader(destroyRef?: DestroyRef): ResourceLoader {
     load<T>(source$: Observable<T>, handlers: LoadResourceHandlers<T>): void {
       subscription?.unsubscribe();
       handlers.setLoading();
-
-      subscription = source$.subscribe({
-        next: (value) => handlers.setSuccess(value),
-        complete: () => {
-          if (handlers.isLoading()) {
-            handlers.setError();
-          }
-        },
-      });
+      subscription = subscribeToResource(source$, handlers);
     },
   };
 }
@@ -50,13 +56,5 @@ export function loadResource<T>(
 ): Subscription {
   previous?.unsubscribe();
   handlers.setLoading();
-
-  return source$.subscribe({
-    next: (value) => handlers.setSuccess(value),
-    complete: () => {
-      if (handlers.isLoading()) {
-        handlers.setError();
-      }
-    },
-  });
+  return subscribeToResource(source$, handlers);
 }

@@ -1,0 +1,13 @@
+<section
+  [attr.aria-label]="listLabel()"
+  class="grid animate-fade-in grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 xl:grid-cols-4"
+>
+  @for (coin of coins(); track coin.id) {
+    <app-coin-card
+      [coin]="coin"
+      [isFavorite]="isFavorite()(coin.id)"
+      [translations]="translations()"
+      (favoriteToggled)="favoriteToggled.emit($event)"
+    />
+  }
+</section>

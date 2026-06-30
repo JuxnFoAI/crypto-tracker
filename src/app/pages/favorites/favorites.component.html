@@ -11,7 +11,7 @@
 
     @switch (state()) {
       @case ('loading') {
-        <app-loading-spinner />
+        <app-loading-spinner [loadingLabel]="t().common.loading" />
       }
       @case ('error') {
         <app-error-state
@@ -42,19 +42,13 @@
             </a>
           </div>
         } @else {
-          <section
-            [attr.aria-label]="t().favorites.listLabel"
-            class="grid animate-fade-in grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 xl:grid-cols-4"
-          >
-            @for (coin of favoriteCoins(); track coin.id) {
-              <app-coin-card
-                [coin]="coin"
-                [isFavorite]="isFavorite(coin.id)"
-                [translations]="t()"
-                (favoriteToggled)="onFavoriteToggled($event)"
-              />
-            }
-          </section>
+          <app-coin-grid
+            [coins]="favoriteCoins()"
+            [translations]="t()"
+            [listLabel]="t().favorites.listLabel"
+            [isFavorite]="isFavorite"
+            (favoriteToggled)="onFavoriteToggled($event)"
+          />
         }
       }
     }

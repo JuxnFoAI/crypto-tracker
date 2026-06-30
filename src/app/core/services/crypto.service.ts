@@ -38,11 +38,6 @@ export class CryptoService {
   readonly isRateLimited: Signal<boolean> = this.rateLimitedSignal.asReadonly();
 
   /**
-   * Obtiene el listado de las principales monedas ordenadas por capitalización
-   * de mercado.
-   * Endpoint: GET /coins/markets
-   */
-  /**
    * Obtiene datos de mercado para un conjunto de monedas por id.
    * Endpoint: GET /coins/markets?ids=...
    */
@@ -63,6 +58,11 @@ export class CryptoService {
     );
   }
 
+  /**
+   * Obtiene el listado de las principales monedas ordenadas por capitalización
+   * de mercado.
+   * Endpoint: GET /coins/markets
+   */
   getTopCoins(): Observable<Coin[]> {
     const params = new HttpParams()
       .set('vs_currency', VS_CURRENCY)

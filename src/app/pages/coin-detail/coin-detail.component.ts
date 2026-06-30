@@ -28,8 +28,9 @@ import {
   resolveLocalizedDescription,
 } from '../../core/utils/coin-about.util';
 import { VS_CURRENCY, stripHtml, truncateText } from '../../core/utils/coin-format.util';
-import { resolveLoadError } from '../../core/utils/load-error.util';
+import { createLoadErrorMessage } from '../../core/utils/load-error.util';
 import { loadResource } from '../../core/utils/load-resource.util';
+import { createLoadStateHandlers } from '../../core/utils/load-state-handlers.util';
 import { ErrorStateComponent } from '../../shared/components/error-state/error-state.component';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { ProgressBarComponent } from '../../shared/components/progress-bar/progress-bar.component';
@@ -87,13 +88,13 @@ export class CoinDetailComponent {
   // 4. Estado computado
   readonly t = this.languageService.translations;
 
-  readonly errorMessage = computed(() =>
-    resolveLoadError(
-      this.state(),
-      this.cryptoService.isRateLimited(),
-      this.t().common.rateLimitError,
-      this.t().detail.loadError,
-    ),
+  readonly errorMessage = createLoadErrorMessage(
+    this.state,
+    this.cryptoService.isRateLimited,
+    () => ({
+      rateLimitError: this.t().common.rateLimitError,
+      loadError: this.t().detail.loadError,
+    }),
   );
 
   readonly currentPrice = computed(
@@ -226,15 +227,7 @@ export class CoinDetailComponent {
   private loadCoin(id: string): Subscription {
     return loadResource(
       this.cryptoService.getCoinById(id),
-      {
-        setLoading: () => this.state.set('loading'),
-        setSuccess: (detail) => {
-          this.coin.set(detail);
-          this.state.set('success');
-        },
-        setError: () => this.state.set('error'),
-        isLoading: () => this.state() === 'loading',
-      },
+      createLoadStateHandlers(this.state, this.coin),
       null,
     );
   }

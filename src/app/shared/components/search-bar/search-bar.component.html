@@ -16,8 +16,8 @@
   <input
     type="search"
     [formControl]="searchControl"
-    [placeholder]="t().search.placeholder"
-    [attr.aria-label]="t().search.ariaLabel"
+    [placeholder]="placeholder()"
+    [attr.aria-label]="ariaLabel()"
     class="w-full rounded-xl bg-white py-3 pl-10 pr-4 text-base text-gray-900 placeholder-gray-400 ring-1 ring-gray-200 transition focus:outline-none focus:ring-2 focus:ring-accent sm:py-2.5 sm:text-sm dark:bg-bg-card dark:text-white dark:placeholder-gray-500 dark:ring-white/5"
   />
 </div>

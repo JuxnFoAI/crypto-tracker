@@ -1,6 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-
-import { LanguageService } from '../../../core/services/language.service';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-loading-spinner',
@@ -10,9 +8,6 @@ import { LanguageService } from '../../../core/services/language.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoadingSpinnerComponent {
-  // 1. Dependencias
-  private readonly languageService = inject(LanguageService);
-
-  // 2. Estado computado
-  readonly t = this.languageService.translations;
+  readonly loadingLabel = input.required<string>();
+  readonly compact = input<boolean>(false);
 }

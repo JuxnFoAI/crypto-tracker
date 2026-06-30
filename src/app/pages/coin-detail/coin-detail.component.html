@@ -19,7 +19,7 @@
 
     @switch (state()) {
       @case ('loading') {
-        <app-loading-spinner />
+        <app-loading-spinner [loadingLabel]="t().common.loading" />
       }
       @case ('error') {
         <app-error-state
@@ -249,7 +249,7 @@
                   <div
                     class="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-white/60 dark:bg-bg-card/60"
                   >
-                    <app-loading-spinner />
+                    <app-loading-spinner [loadingLabel]="t().common.loading" [compact]="true" />
                   </div>
                 } @else if (historyState() === 'error') {
                   <div role="alert" class="absolute inset-0 z-10 flex items-center justify-center">
