@@ -60,7 +60,7 @@
               ]
             },
             "github-pages": {
-              "baseHref": "/CryptoTracker/",
+              "baseHref": "/crypto-tracker/",
               "budgets": [
                 {
                   "type": "initial",

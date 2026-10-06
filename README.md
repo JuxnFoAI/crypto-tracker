@@ -8,7 +8,7 @@ Aplicación web para seguir el mercado de criptomonedas en tiempo real: precios,
 | --- | --- |
 | ![Listado de criptomonedas con búsqueda y tarjetas de precio](docs/screenshot-home.png) | ![Página de detalle con estadísticas y descripción](docs/screenshot-coin-detail.png) |
 
-🔗 **Demo en vivo**: [juxnfoai.github.io/CryptoTracker](https://juxnfoai.github.io/CryptoTracker/)
+🔗 **Demo en vivo**: [juxnfoai.github.io/crypto-tracker](https://juxnfoai.github.io/crypto-tracker/)
 
 ## ✨ Funcionalidades
 
@@ -55,8 +55,8 @@ Requisitos: [Node.js](https://nodejs.org/) 22+ y npm.
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/JuxnFoAI/CryptoTracker.git
-cd CryptoTracker
+git clone https://github.com/JuxnFoAI/crypto-tracker.git
+cd crypto-tracker
 
 # 2. Instalar dependencias
 npm install
@@ -79,7 +79,7 @@ npm test                   # Tests unitarios
 
 La demo se publica automáticamente en cada push a `master` mediante [GitHub Actions](.github/workflows/deploy-github-pages.yml).
 
-**URL**: [https://juxnfoai.github.io/CryptoTracker/](https://juxnfoai.github.io/CryptoTracker/)
+**URL**: [https://juxnfoai.github.io/crypto-tracker/](https://juxnfoai.github.io/crypto-tracker/)
 
 ### Activar GitHub Pages (solo la primera vez)
 
